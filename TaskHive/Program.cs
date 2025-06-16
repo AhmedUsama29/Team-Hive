@@ -1,3 +1,4 @@
+using Persistence;
 
 namespace TaskHive
 {
@@ -9,6 +10,7 @@ namespace TaskHive
 
             // Add services to the container.
 
+            builder.Services.AddInfrastructureRegistration(builder.Configuration);
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
