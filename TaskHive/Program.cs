@@ -11,17 +11,19 @@ namespace TaskHive
             // Add services to the container.
 
             builder.Services.AddInfrastructureRegistration(builder.Configuration);
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddWebApplicationServices(builder.Configuration);
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.DocumentTitle = "Task Hive App";
+                    options.EnableFilter();
+                    options.DisplayRequestDuration();
+                });
             }
 
             app.UseHttpsRedirection();
