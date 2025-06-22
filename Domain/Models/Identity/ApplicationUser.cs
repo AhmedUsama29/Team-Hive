@@ -11,6 +11,7 @@ namespace Domain.Models.Identity
     {
         Student = 1,
         Teacher = 2,
+        TeacherAssistant = 3,
     }
 
     public enum Gender
