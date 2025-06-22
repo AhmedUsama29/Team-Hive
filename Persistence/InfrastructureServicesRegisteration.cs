@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Data;
 using Persistence.Identity;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace Persistence
 
         public static IServiceCollection AddInfrastructureRegistration(this IServiceCollection services, IConfiguration configurations)
         {
+
+            services.AddDbContext<TaskHiveDbContext>(options =>
+                            options.UseSqlServer(configurations.GetConnectionString("TaskHiveConnection")));
+
             services.AddDbContext<TaskHiveIdentityDbContext>(options =>
                             options.UseSqlServer(configurations.GetConnectionString("IdentityTaskHiveConnection")));
 

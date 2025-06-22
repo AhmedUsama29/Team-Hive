@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Models.Teams;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,6 @@ namespace Domain.Models.Identity
         public string LastName { get; set; } = null!;
         public DateOnly DateOfBirth { get; set; } = default!;
         public UserType UserType { get; set; } = default!;
-
+        public Gender Gender { get; set; }
     }
 }
