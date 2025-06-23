@@ -34,7 +34,7 @@ namespace Persistence.Data.Configurations
             builder.HasMany(x => x.Tasks)
                    .WithOne(x => x.AssignedTo)
                    .HasForeignKey(x => x.AssignedToId)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .OnDelete(DeleteBehavior.NoAction);
             
         }
     }

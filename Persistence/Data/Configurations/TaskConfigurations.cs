@@ -29,12 +29,12 @@ namespace Persistence.Data.Configurations
             builder.HasOne(t => t.AssignedBy)
                    .WithMany()
                    .HasForeignKey(t => t.AssignedById)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.CompletedBy)
                      .WithMany()
                      .HasForeignKey(t => t.CompletedById)
-                     .OnDelete(DeleteBehavior.SetNull);
+                     .OnDelete(DeleteBehavior.NoAction);
 
         }
     }
