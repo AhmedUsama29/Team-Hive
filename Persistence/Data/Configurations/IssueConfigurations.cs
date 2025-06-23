@@ -28,6 +28,11 @@ namespace Persistence.Data.Configurations
             builder.HasOne(i => i.CreatedBy)
                    .WithMany()
                    .HasForeignKey(i => i.CreatedById)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(i => i.Team)
+                   .WithMany(t => t.Issues)
+                   .HasForeignKey(i => i.TeamId)
                    .OnDelete(DeleteBehavior.SetNull);
 
         }

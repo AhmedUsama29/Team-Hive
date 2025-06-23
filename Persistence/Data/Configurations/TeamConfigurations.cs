@@ -28,11 +28,6 @@ namespace Persistence.Data.Configurations
                    .WithOne(i => i.Team)
                    .HasForeignKey(i => i.TeamId)
                    .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(t => t.Tasks)
-                   .WithOne(i => i.Team)
-                   .HasForeignKey(i => i.TeamId)
-                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
