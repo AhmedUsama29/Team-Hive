@@ -1,4 +1,5 @@
 using Persistence;
+using Services;
 
 namespace TaskHive
 {
@@ -12,6 +13,7 @@ namespace TaskHive
 
             builder.Services.AddInfrastructureRegistration(builder.Configuration);
             builder.Services.AddWebApplicationServices(builder.Configuration);
+            builder.Services.AddAplicationServices(builder.Configuration);
 
             var app = builder.Build();
 
