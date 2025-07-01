@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
+using Domain.Exceptions;
 using ServicesAbstraction;
 using Shared.DataTransferObjects.Tasks;
 using System;
@@ -31,10 +32,8 @@ namespace Services
 
             var task = await repo.GetByIdAsync(id);
 
-            if (task == null) //handle
-            {
-                throw new ArgumentNullException(nameof(id), "Task not found");
-            }
+            if (task == null)
+                throw new TaskNotFoundException(id);
 
             repo.Delete(task);
             await _unitOfWork.SaveChangesAsync();
@@ -56,10 +55,8 @@ namespace Services
 
             var task = await repo.GetByIdAsync(id);
 
-            if (task == null) //handle
-            {
-                throw new ArgumentNullException(nameof(id), "Task not found");
-            }
+            if (task == null)
+                throw new TaskNotFoundException(id);
 
             return _mapper.Map<TaskDetailedResponse>(task);
         }
