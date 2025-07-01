@@ -16,7 +16,22 @@ namespace Services.MappingProfiles
 
             CreateMap<Task, TaskResponse>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority)).ReverseMap();
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ReverseMap();
+
+            CreateMap<Task,TaskDetailedResponse>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ReverseMap();
+
+            CreateMap<Task, TaskCreationDto>()
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ReverseMap();
+
+            CreateMap<Task, TaskUpdateDto>()
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ReverseMap();
 
         }
     }

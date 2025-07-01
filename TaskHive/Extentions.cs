@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using TaskHive.Factories;
 
 namespace TaskHive
 {
@@ -10,6 +11,11 @@ namespace TaskHive
         {
             services.AddControllers();
             services.AddSwaggerServices();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateApiValidationResponse;
+            });
+
 
             return services;
         }
