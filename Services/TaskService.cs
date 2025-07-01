@@ -12,14 +12,32 @@ namespace Services
 {
     public class TaskService(IUnitOfWork _unitOfWork, IMapper _mapper) : ITaskService
     {
-        public Task<TaskCreationDto> CreateTaskAsync(TaskCreationDto taskCreationDto)
+        public async Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto)
         {
-            throw new NotImplementedException();
+            var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
+
+            var task = _mapper.Map<Domain.Models.Task>(taskCreationDto);
+
+            repo.Add(task);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return _mapper.Map<TaskDetailedResponse>(task);
         }
 
-        public Task DeleteTaskAsync(string id)
+        public async Task DeleteTaskAsync(string id)
         {
-            throw new NotImplementedException();
+            var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
+
+            var task = await repo.GetByIdAsync(id);
+
+            if (task == null) //handle
+            {
+                throw new ArgumentNullException(nameof(id), "Task not found");
+            }
+
+            repo.Delete(task);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync()
@@ -32,14 +50,32 @@ namespace Services
 
         }
 
-        public Task<TaskDetailedResponse> GetTaskByIdAsync(string id)
+        public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
+
+            var task = await repo.GetByIdAsync(id);
+
+            if (task == null) //handle
+            {
+                throw new ArgumentNullException(nameof(id), "Task not found");
+            }
+
+            return _mapper.Map<TaskDetailedResponse>(task);
         }
 
-        public Task<TaskUpdateDto> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
+        public async Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
         {
-            throw new NotImplementedException();
+            var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
+
+            var task = _mapper.Map<Domain.Models.Task>(taskUpdateDto);
+
+            repo.Update(task);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return _mapper.Map<TaskDetailedResponse>(task);
+
         }
 
     }
