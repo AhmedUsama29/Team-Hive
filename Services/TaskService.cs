@@ -19,6 +19,15 @@ namespace Services
 
             var task = _mapper.Map<Domain.Models.Task>(taskCreationDto);
 
+            task.Id = Guid.NewGuid().ToString();
+            task.CreatedOn = DateTime.UtcNow;
+            task.LastUpdatedAt = DateTime.UtcNow;
+
+            ///////////////////////Temp/////////////////////////
+            task.AssignedById = 3;
+            task.TeamId = "1";
+            ///////////////////////////////////////////////////
+
             repo.Add(task);
 
             await _unitOfWork.SaveChangesAsync();
@@ -35,7 +44,9 @@ namespace Services
             if (task == null)
                 throw new TaskNotFoundException(id);
 
-            repo.Delete(task);
+            task.IsDeleted = true;
+            repo.Update(task);
+
             await _unitOfWork.SaveChangesAsync();
         }
 

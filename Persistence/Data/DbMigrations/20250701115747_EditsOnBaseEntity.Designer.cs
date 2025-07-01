@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Data;
 
@@ -11,9 +12,11 @@ using Persistence.Data;
 namespace Persistence.Data.DbMigrations
 {
     [DbContext(typeof(TaskHiveDbContext))]
-    partial class TaskHiveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701115747_EditsOnBaseEntity")]
+    partial class EditsOnBaseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +70,7 @@ namespace Persistence.Data.DbMigrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Issues", (string)null);
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("Domain.Models.Task", b =>
@@ -130,7 +133,7 @@ namespace Persistence.Data.DbMigrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Domain.Models.Teams.Team", b =>
@@ -170,7 +173,7 @@ namespace Persistence.Data.DbMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("Domain.Models.Teams.TeamMember", b =>
@@ -213,7 +216,7 @@ namespace Persistence.Data.DbMigrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("TeamMembers", (string)null);
+                    b.ToTable("TeamMembers");
                 });
 
             modelBuilder.Entity("Domain.Models.Issue", b =>
