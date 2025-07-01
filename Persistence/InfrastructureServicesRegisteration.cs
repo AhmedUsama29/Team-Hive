@@ -1,10 +1,12 @@
-﻿using Domain.Models.Identity;
+﻿using Domain.Contracts;
+using Domain.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Data;
 using Persistence.Identity;
+using Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,8 @@ namespace Persistence
 
             services.AddDbContext<TaskHiveIdentityDbContext>(options =>
                             options.UseSqlServer(configurations.GetConnectionString("IdentityTaskHiveConnection")));
+
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
 
             services.RegisterIdentity();
 

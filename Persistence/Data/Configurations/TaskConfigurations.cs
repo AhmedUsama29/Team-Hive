@@ -26,6 +26,9 @@ namespace Persistence.Data.Configurations
                      .HasMaxLength(500)
                      .IsRequired(false);
 
+            builder.Property(t => t.IsDeleted)
+                        .HasDefaultValue(false);
+
             builder.HasOne(t => t.AssignedBy)
                    .WithMany()
                    .HasForeignKey(t => t.AssignedById)

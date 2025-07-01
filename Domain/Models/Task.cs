@@ -41,7 +41,7 @@ namespace Domain.Models
 
         public int? CompletedById { get; set; }
 
-        public TeamMember AssignedBy { get; set; } = null!;
+        public TeamMember AssignedBy { get; set; }
         public int AssignedById { get; set; } = default!;
 
         public TeamMember? AssignedTo { get; set; }

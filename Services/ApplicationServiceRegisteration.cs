@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Services.MappingProfiles;
+using ServicesAbstraction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace Services
                                                                 IConfiguration configuration)
         {
             services.AddAutoMapper(typeof(TaskProfile).Assembly);
+
+            services.AddScoped<IServiceManager, ServiceManagerWithFactoryDelegate>();
+
+            services.AddScoped<ITaskService, TaskService>();
+
+            services.AddScoped<Func<ITaskService>>(provider => ()
+                => provider.GetRequiredService<ITaskService>());
 
             return services;
         }

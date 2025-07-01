@@ -11,7 +11,7 @@ namespace Services.MappingProfiles
 {
     public class TaskProfile : Profile
     {
-        protected TaskProfile()
+        public TaskProfile()
         {
 
             CreateMap<Task, TaskResponse>()
