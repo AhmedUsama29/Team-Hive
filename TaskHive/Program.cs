@@ -1,5 +1,6 @@
 using Persistence;
 using Services;
+using TaskHive.Middelwares;
 
 namespace TaskHive
 {
@@ -16,6 +17,9 @@ namespace TaskHive
             builder.Services.AddAplicationServices(builder.Configuration);
 
             var app = builder.Build();
+
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+
 
             if (app.Environment.IsDevelopment())
             {
