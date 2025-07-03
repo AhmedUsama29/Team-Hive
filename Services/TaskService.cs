@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Exceptions;
+using Services.Specifications;
 using ServicesAbstraction;
 using Shared.DataTransferObjects.Tasks;
 using System;
@@ -42,7 +43,9 @@ namespace Services
 
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var task = await repo.GetByIdAsync(id);
+            var specs = new TaskSpecifications(id);
+
+            var task = await repo.GetByIdAsync(specs);
 
             if (task == null || task.IsDeleted == true)
                 throw new TaskNotFoundException(id);
@@ -53,11 +56,13 @@ namespace Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync() //specs
+        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync(TaskQueryParameters taskQueryParameters) //specs
         {
+            var specs = new TaskSpecifications(taskQueryParameters);
+
             var TasksRepo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var tasks = await TasksRepo.GetAllAsync();
+            var tasks = await TasksRepo.GetAllAsync(specs);
 
             return _mapper.Map<IEnumerable<TaskResponse>>(tasks);
 
@@ -65,9 +70,12 @@ namespace Services
 
         public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id) //specs
         {
+
+            var specs = new TaskSpecifications(id);
+
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var task = await repo.GetByIdAsync(id);
+            var task = await repo.GetByIdAsync(specs);
 
             return task == null ? throw new TaskNotFoundException(id) : _mapper.Map<TaskDetailedResponse>(task);
         }
@@ -79,7 +87,9 @@ namespace Services
 
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var existingTask = await repo.GetByIdAsync(taskUpdateDto.Id) 
+            var specs = new TaskSpecifications(taskUpdateDto.Id);
+
+            var existingTask = await repo.GetByIdAsync(specs) 
                 ?? throw new TaskNotFoundException(taskUpdateDto.Id);
 
             _mapper.Map(taskUpdateDto, existingTask);

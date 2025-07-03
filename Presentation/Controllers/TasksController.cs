@@ -37,9 +37,9 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks()
+        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks([FromQuery]TaskQueryParameters taskQueryParameters)
         {
-            return Ok(await _serviceManager.TaskService.GetAllTasksAsync());
+            return Ok(await _serviceManager.TaskService.GetAllTasksAsync(taskQueryParameters));
         }
 
         [HttpGet("{Id}")]
