@@ -8,7 +8,7 @@ namespace Shared.DataTransferObjects.Tasks
 {
     public class TaskUpdateDto
     {
-
+        public string Id { get; set; }
         public string Title { get; set; } = default!;
         public string Status { get; set; } = default!;
         public DateTime? DueDate { get; set; }
