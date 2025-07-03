@@ -37,11 +37,14 @@ namespace Services
 
         public async Task DeleteTaskAsync(string id)
         {
+
+            //make sure that the user is able to delete this task
+
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
             var task = await repo.GetByIdAsync(id);
 
-            if (task == null)
+            if (task == null || task.IsDeleted == true)
                 throw new TaskNotFoundException(id);
 
             task.IsDeleted = true;
@@ -50,7 +53,7 @@ namespace Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync()
+        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync() //specs
         {
             var TasksRepo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
@@ -60,29 +63,31 @@ namespace Services
 
         }
 
-        public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id)
+        public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id) //specs
         {
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
             var task = await repo.GetByIdAsync(id);
 
-            if (task == null)
-                throw new TaskNotFoundException(id);
-
-            return _mapper.Map<TaskDetailedResponse>(task);
+            return task == null ? throw new TaskNotFoundException(id) : _mapper.Map<TaskDetailedResponse>(task);
         }
 
         public async Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
         {
+
+            //make sure that the user is able to update this task
+
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var task = _mapper.Map<Domain.Models.Task>(taskUpdateDto);
+            var existingTask = await repo.GetByIdAsync(taskUpdateDto.Id) 
+                ?? throw new TaskNotFoundException(taskUpdateDto.Id);
 
-            repo.Update(task);
+            _mapper.Map(taskUpdateDto, existingTask);
+
+            existingTask.LastUpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.SaveChangesAsync();
-
-            return _mapper.Map<TaskDetailedResponse>(task);
+            return _mapper.Map<TaskDetailedResponse>(existingTask);
 
         }
 

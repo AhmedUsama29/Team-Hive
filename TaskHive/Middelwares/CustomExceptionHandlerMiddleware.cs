@@ -43,7 +43,7 @@ namespace TaskHive.Middelwares
 
             var response = new ErrorDetails()
             {
-                ErrorMessage = ex.Message
+                ErrorMessage = ex.InnerException?.Message ?? ex.Message
             };
 
 
