@@ -9,7 +9,7 @@ namespace ServicesAbstraction
 {
     public interface ITaskService
     {   
-        Task<IEnumerable<TaskResponse>> GetAllTasksAsync();
+        Task<IEnumerable<TaskResponse>> GetAllTasksAsync(TaskQueryParameters taskQueryParameters);
         Task<TaskDetailedResponse> GetTaskByIdAsync(string id);
         Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto);
         Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto);
