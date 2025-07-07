@@ -22,8 +22,13 @@ namespace Services
 
             services.AddScoped<ITaskService, TaskService>();
 
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
             services.AddScoped<Func<ITaskService>>(provider => ()
                 => provider.GetRequiredService<ITaskService>());
+            
+            services.AddScoped<Func<IAuthenticationService>>(provider => ()
+                => provider.GetRequiredService<IAuthenticationService>());
 
             return services;
         }

@@ -11,5 +11,7 @@ namespace ServicesAbstraction
 
         public ITaskService TaskService { get; }
 
+        public IAuthenticationService AuthenticationService { get;}
+
     }
 }
