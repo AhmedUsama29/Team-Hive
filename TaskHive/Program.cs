@@ -1,12 +1,13 @@
 using Persistence;
 using Services;
+using System.Threading.Tasks;
 using TaskHive.Middelwares;
 
 namespace TaskHive
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ namespace TaskHive
             builder.Services.AddAplicationServices(builder.Configuration);
 
             var app = builder.Build();
+
+            await app.InitializeDbAsync();
 
             app.UseMiddleware<CustomExceptionHandlerMiddleware>();
 

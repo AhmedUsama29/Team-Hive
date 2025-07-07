@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using TaskHive.Factories;
 
@@ -24,6 +25,16 @@ namespace TaskHive
         {
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+        }
+
+        public static async Task<WebApplication> InitializeDbAsync(this WebApplication app)
+        {
+
+            using var Scope = app.Services.CreateScope(); //BG Services
+            var dbInitializer = Scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await dbInitializer.InitializeIdentityAsync();
+            return app;
+
         }
 
     }
