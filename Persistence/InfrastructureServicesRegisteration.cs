@@ -30,6 +30,8 @@ namespace Persistence
 
             services.AddScoped<IUnitOfWork,UnitOfWork>();
 
+            services.AddScoped<IDbInitializer, DbInitializer>();
+
             services.RegisterIdentity();
 
             return services;
@@ -37,8 +39,6 @@ namespace Persistence
 
         private static IServiceCollection RegisterIdentity(this IServiceCollection services)
         {
-
-            //services.AddIdentity<ApplicationUser, IdentityRole>();
 
             services.AddIdentityCore<ApplicationUser>(config =>
             {
