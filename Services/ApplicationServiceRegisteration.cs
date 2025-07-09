@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Services.MappingProfiles;
 using ServicesAbstraction;
+using Shared.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace Services
             
             services.AddScoped<Func<IAuthenticationService>>(provider => ()
                 => provider.GetRequiredService<IAuthenticationService>());
+
+            services.Configure<JWTOptions>(configuration.GetSection("JWTOptions"));
 
             return services;
         }
