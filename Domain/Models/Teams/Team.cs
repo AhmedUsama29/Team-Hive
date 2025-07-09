@@ -9,10 +9,10 @@ namespace Domain.Models.Teams
     public class Team : BaseEntity<string>
     {
 
-        public int MaxCapacity { get; set; } = default!;
+        public int MaxCapacity { get; set; }
         public string JoinCode { get; set; } = null!;
         public string? Description { get; set; }
-        public int SupervisorId { get; set; } = default!;
+        public int SupervisorId { get; set; }
         public bool IsLocked { get; set; } = default!;
         public int LeaderId { get; set; } = default!;
         public ICollection<TeamMember> Members { get; set; }

@@ -22,7 +22,7 @@ namespace Services.Specifications
             AddInclude(t => t.AssignedTo);
         }
 
-        public TaskSpecifications(string Id) : base(t => t.Id == Id) // get by id
+        public TaskSpecifications(string Id) : base(t => (t.Id == Id) && (t.IsDeleted == false)) // get by id
         {
             AddInclude(t => t.CompletedBy);
             AddInclude(t => t.AssignedBy);

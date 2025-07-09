@@ -12,8 +12,7 @@ namespace Persistence.Data.Configurations
     public class TeamMemberConfigurations : IEntityTypeConfiguration<TeamMember>
     {
         public void Configure(EntityTypeBuilder<TeamMember> builder)
-        {
-
+        {     
             builder.Property(x => x.Title)
                    .HasMaxLength(20)
                    .IsRequired();
@@ -25,6 +24,7 @@ namespace Persistence.Data.Configurations
             builder.Property(x => x.Notes)
                  .HasMaxLength(500)
                  .IsRequired(false);
+
 
             builder.HasOne(x => x.Team)
                    .WithMany(x => x.Members)

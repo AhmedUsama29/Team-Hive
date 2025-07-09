@@ -13,5 +13,7 @@ namespace ServicesAbstraction
 
         public IAuthenticationService AuthenticationService { get;}
 
+        public ITeamService TeamService { get; }
+
     }
 }
