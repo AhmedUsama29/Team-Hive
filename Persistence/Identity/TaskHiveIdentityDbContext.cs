@@ -37,6 +37,11 @@ namespace Persistence.Identity
                 .HasConversion<string>()
                 .IsRequired()
                 .HasColumnType("varchar(7)");
+
+            builder.Entity<ApplicationUser>().Property(T => T.Gender)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasColumnType("varchar(6)");
         }
 
     }
