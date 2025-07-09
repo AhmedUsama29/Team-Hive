@@ -29,6 +29,7 @@ namespace Persistence
                     var admin = new ApplicationUser()
                     {
                         FirstName = "Admin",
+                        LastName = "Ahmed",
                         UserName = "admin",
                         Email = "admin@gmail.com",
                     };
