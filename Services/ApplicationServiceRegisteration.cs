@@ -25,11 +25,16 @@ namespace Services
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddScoped<ITeamService, TeamService>();
+
             services.AddScoped<Func<ITaskService>>(provider => ()
                 => provider.GetRequiredService<ITaskService>());
             
             services.AddScoped<Func<IAuthenticationService>>(provider => ()
                 => provider.GetRequiredService<IAuthenticationService>());
+
+            services.AddScoped<Func<ITeamService>>(provider => ()
+                => provider.GetRequiredService<ITeamService>());
 
             services.Configure<JWTOptions>(configuration.GetSection("JWTOptions"));
 

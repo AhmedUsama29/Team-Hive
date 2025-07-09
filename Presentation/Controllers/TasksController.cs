@@ -12,6 +12,7 @@ namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TasksController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpPost("Create")]

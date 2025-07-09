@@ -21,13 +21,13 @@ namespace Persistence.Data.Configurations
             builder.Property(t => t.LeaderId)
                    .IsRequired();
 
-            builder.Property(t => t.MaxCapacity)
-                   .IsRequired();
-
             builder.HasMany(t => t.Issues)
                    .WithOne(i => i.Team)
                    .HasForeignKey(i => i.TeamId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(b => b.JoinCode)
+                    .IsUnique();
         }
     }
 }

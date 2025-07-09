@@ -36,7 +36,7 @@ namespace Persistence.Identity
             builder.Entity<ApplicationUser>().Property(T => T.UserType)
                 .HasConversion<string>()
                 .IsRequired()
-                .HasColumnType("varchar(7)");
+                .HasColumnType("varchar(20)");
 
             builder.Entity<ApplicationUser>().Property(T => T.Gender)
                 .HasConversion<string>()
