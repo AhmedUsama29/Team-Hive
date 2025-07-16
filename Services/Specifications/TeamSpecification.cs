@@ -13,12 +13,12 @@ namespace Services.Specifications
     {
         public TeamSpecification() : base(t => t.IsDeleted == false)  // Get All 
         {
-            
+            AddInclude(t => t.Members);
         }
 
         public TeamSpecification(string Id) : base(t => (t.Id == Id) && (t.IsDeleted == false)) // get by id
         {
-
+            AddInclude(t => t.Members);
         }
     }
 }

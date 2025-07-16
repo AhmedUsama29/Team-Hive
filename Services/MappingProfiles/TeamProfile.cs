@@ -16,6 +16,7 @@ namespace Services.MappingProfiles
         {
             CreateMap<TeamCreationDto, Team>().ReverseMap();
             CreateMap<TeamResponse, Team>().ReverseMap();
+            CreateMap<TeamUpdateDto,Team>().ReverseMap();
         }
 
     }

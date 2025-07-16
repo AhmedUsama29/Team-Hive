@@ -12,7 +12,6 @@ namespace Shared.DataTransferObjects.Teams
         public int MaxCapacity { get; set; }
         public bool IsLocked { get; set; }
         public string? Description { get; set; }
-        public int LeaderId { get; set; } // Not anyone Can access
 
     }
 }

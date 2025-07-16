@@ -31,8 +31,9 @@ namespace Services
 
             return new UserResponse
             {
+                Id = user.Id!,
                 Email = user.Email!,
-                Username = user.UserName,
+                Username = user.UserName!,
                 Token = await GenerateToken(user)
             };
         }
@@ -47,6 +48,7 @@ namespace Services
             if (isPasswordValid)
                 return new UserResponse
                 {
+                    Id = user.Id!,
                     Email = user.Email!,
                     Username = user.UserName!,
                     Token = await GenerateToken(user)
@@ -73,6 +75,7 @@ namespace Services
 
             if (result.Succeeded) return new UserResponse()
             {
+                Id = user.Id!,
                 Username = user.UserName,
                 Email = user.Email,
                 Token = await GenerateToken(user)
@@ -91,6 +94,7 @@ namespace Services
             {
                 new Claim(ClaimTypes.Email, user.Email!),
                 new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id!),
             };
 
             var roles = await _userManager.GetRolesAsync(user);
