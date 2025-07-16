@@ -10,11 +10,13 @@ namespace ServicesAbstraction
     public interface ITeamService
     {
 
-        public Task<TeamResponse> CreateTeamAsync(TeamCreationDto teamCreationDto, string mail);
-        public Task<TeamResponse> UpdateTeamSettingsAsync(TeamUpdateDto teamUpdateDto);
-        public Task<TeamResponse> GetTeamByIdAsync(string teamId); // still
-        public Task<bool> DeleteTeamAsync(string teamId);
+        public Task<TeamResponse> CreateTeamAsync(TeamCreationDto teamCreationDto, string userId);
+        public Task<TeamResponse> UpdateTeamSettingsAsync(string teamId,string userId, TeamUpdateDto teamUpdateDto);
+        public Task<TeamResponse> GetTeamByIdAsync(string teamId);
+        public Task<bool> DeleteTeamAsync(string teamId, string userId);
         public Task<IEnumerable<TeamResponse>> GetAllTeamsByUserIdAsync(string userId);
+
+        public Task<bool> JoinTeam(string joinCode, string userId);
 
     }
 }

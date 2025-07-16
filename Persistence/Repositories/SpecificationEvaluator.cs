@@ -20,7 +20,7 @@ namespace Persistence.Repositories
 
             foreach (var include in specifications.IncludeExpressions)
             {
-                query.Include(include);
+               query = query.Include(include);
             }
 
             return query;
