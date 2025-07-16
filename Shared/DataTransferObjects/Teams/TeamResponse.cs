@@ -8,6 +8,8 @@ namespace Shared.DataTransferObjects.Teams
 {
     public class TeamResponse
     {
+
+        public string Id { get; set; }
         public string Title { get; set; }
         public string JoinCode { get; set; }
         public int MaxCapacity { get; set; }
