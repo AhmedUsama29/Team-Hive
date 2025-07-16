@@ -19,51 +19,6 @@ namespace Services
     public class TeamService(IUnitOfWork _unitOfWork,
                              IMapper _mapper) : ITeamService
     {
-        //public async Task<TeamResponse> CreateTeamAsync(TeamCreationDto teamCreationDto, string userId)
-        //{
-        //    var team = _mapper.Map<Team>(teamCreationDto)
-        //        ?? throw new Exception("Can't Create This Team");
-
-        //    var teamRepo = _unitOfWork.GetRepository<Team, string>();
-        //    var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
-        //    var user = await _userManager.FindByIdAsync(userId);
-
-        //    team.Id = Guid.NewGuid().ToString();
-        //    team.CreatedOn = DateTime.UtcNow;
-        //    team.MaxCapacity = team.MaxCapacity == 0 ? 50 : teamCreationDto.MaxCapacity;
-
-        //    string joinCode;
-        //    do
-        //    {
-        //        joinCode = GenerateRandomCode();
-        //    } while (await teamRepo.(new TeamByJoinCodeSpecification(joinCode)));   ///////////////////////////
-        //    team.JoinCode = joinCode;
-
-        //    teamRepo.Add(team);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    var teamMember = new TeamMember
-        //    {
-        //        UserId = user!.Id,
-        //        TeamId = team.Id,
-        //        CreatedOn = DateTime.UtcNow,
-        //        IsLeader = true,
-        //        Title = user.FirstName
-        //    };
-
-        //    memberRepo.Add(teamMember);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    var leaderId = teamMember.Id;
-        //    team.LeaderId = leaderId;
-
-        //    teamRepo.Update(team);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    return _mapper.Map<TeamResponse>(team)
-        //           ?? throw new Exception("Can't Map This Team to Response DTO");
-        //}
-
         public async Task<TeamResponse> CreateTeamAsync(TeamCreationDto dto, string userId)
         {
 
@@ -72,8 +27,6 @@ namespace Services
 
             var teamRepo = _unitOfWork.GetRepository<Team, string>();
             var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
-            //var user = await _userManager.FindByIdAsync(userId)
-            //                    ?? throw new UserNotFoundException(userId);
 
             var team = _mapper.Map<Team>(dto);
             team.Id = Guid.NewGuid().ToString();
@@ -109,21 +62,6 @@ namespace Services
 
             return _mapper.Map<TeamResponse>(team);
         }
-
-
-        //public async Task<bool> DeleteTeamAsync(string teamId)
-        //{
-        //    var repo = _unitOfWork.GetRepository<Team, string>();
-
-        //    var specs = new TeamSpecification(teamId);
-        //    var team = await repo.GetByIdAsync(specs)
-        //        ?? throw new TeamNotFoundException(teamId);
-
-        //    team.IsDeleted = true;
-        //    repo.Update(team);
-        //    return await _unitOfWork.SaveChangesAsync() > 0;
-
-        //}
 
         public async Task<bool> DeleteTeamAsync(string teamId, string userId)
         {
@@ -206,34 +144,6 @@ namespace Services
 
             return true;
         }
-
-
-        //public async Task<TeamResponse> UpdateTeamSettingsAsync(string teamId, string userId, TeamUpdateDto teamUpdateDto)
-        //{
-        //    var repo = _unitOfWork.GetRepository<Team, string>();
-
-        //    var user = await _userManager.FindByIdAsync(userId)
-        //        ?? throw new UserNotFoundException(userId);
-
-        //    var specs = new TeamSpecification(teamId);
-        //    var team = await repo.GetByIdAsync(specs)
-        //        ?? throw new TeamNotFoundException(teamId);
-
-        //    var teamMemberRepo = _unitOfWork.GetRepository<TeamMember, int>();
-
-        //    var member = (await teamMemberRepo.GetAllAsync(new TeamMemberSpecifiaction()))
-        //                .FirstOrDefault(t => t.UserId == user.Id && t.TeamId == team.Id)
-        //                ?? throw new MemberNotFoundException();
-
-        //    if (!member.IsLeader)
-        //        throw new UnauthorizedAccessException("You are not authorized to update this team settings.");
-
-        //    _mapper.Map(teamUpdateDto, team);
-
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    return _mapper.Map<TeamResponse>(team);
-        //}
 
         public async Task<TeamResponse> UpdateTeamSettingsAsync(string teamId,string userId, TeamUpdateDto dto)
         {
