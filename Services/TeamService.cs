@@ -99,18 +99,19 @@ namespace Services
 
         }
 
-        public async Task<TeamResponse> GetTeamByIdAsync(string teamId)
+        public async Task<TeamResponse> GetTeamByIdAsync(string teamId, string userId)
         {
             var repo = _unitOfWork.GetRepository<Team, string>();
 
-            var specs = new TeamSpecification(teamId);
+            var specs = new TeamByIdAndMemberSpecification(teamId,userId);
+
             var team = await repo.GetByIdAsync(specs)
                 ?? throw new TeamNotFoundException(teamId);
 
             return _mapper.Map<TeamResponse>(team);
         }
 
-        public async Task<bool> JoinTeam(string joinCode, string userId)
+        public async Task<bool> JoinTeamAsync(string joinCode, string userId)
         {
             var teamRepo = _unitOfWork.GetRepository<Team, string>();
             var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
@@ -145,6 +146,46 @@ namespace Services
             return true;
         }
 
+        public async Task<bool> LeaveTeamAsync(string teamId, string userId)
+        {
+            var teamRepo = _unitOfWork.GetRepository<Team, string>();
+            var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
+
+
+            var team = await teamRepo.GetByIdAsync(new TeamSpecification(teamId))
+                        ?? throw new TeamNotFoundException(teamId);
+
+            var member = team.Members.FirstOrDefault(m => m.UserId == userId);
+            if (member == null)
+                throw new UnauthorizedAccessException("You are not a member of this team.");
+
+
+            if (member.IsLeader && team.Members.Count > 1)
+            {
+                memberRepo.Delete(member);
+                var newLeader = team.Members.FirstOrDefault(m => m.UserId != userId);
+                if (newLeader is not null)
+                {
+                    newLeader.IsLeader = true;
+                    newLeader.Title = "Leader";
+                    team.LeaderId = newLeader.Id;
+                }
+
+            }
+            else if (team.Members.Count == 1)
+            {
+                memberRepo.Delete(member);
+                return await DeleteTeamAsync(teamId, userId);
+                
+            }
+            else
+            {
+                memberRepo.Delete(member);
+            }
+
+            return await _unitOfWork.SaveChangesAsync() > 0;
+        }
+
         public async Task<TeamResponse> UpdateTeamSettingsAsync(string teamId,string userId, TeamUpdateDto dto)
         {
             if(string.IsNullOrWhiteSpace(userId))
@@ -162,6 +203,8 @@ namespace Services
 
             return _mapper.Map<TeamResponse>(team);
         }
+
+
 
 
         private string GenerateRandomCode(int length = 6)
