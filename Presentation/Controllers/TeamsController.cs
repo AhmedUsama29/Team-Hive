@@ -20,7 +20,9 @@ namespace Presentation.Controllers
         [HttpGet("get/{teamId}")]
         public async Task<ActionResult<TeamResponse>> GetTeamById([FromRoute] string teamId)
         {
-            return Ok(await _serviceManager.TeamService.GetTeamByIdAsync(teamId));
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return Ok(await _serviceManager.TeamService.GetTeamByIdAsync(teamId, userId!));
         }
 
         [HttpGet("get")]
@@ -58,7 +60,14 @@ namespace Presentation.Controllers
         public async Task<ActionResult<bool>> JoinTeam(string joinCode)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _serviceManager.TeamService.JoinTeam(joinCode, userId!));
+            return Ok(await _serviceManager.TeamService.JoinTeamAsync(joinCode, userId!));
+        }
+
+        [HttpPost("leave/{teamId}")]
+        public async Task<ActionResult<bool>> LeaveTeam([FromRoute] string teamId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Ok(await _serviceManager.TeamService.LeaveTeamAsync(teamId, userId!));
         }
     }
 }

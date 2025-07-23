@@ -73,6 +73,10 @@ namespace Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
+            var roleName = request.Role.ToString();
+
+            await _userManager.AddToRoleAsync(user, roleName);
+
             if (result.Succeeded) return new UserResponse()
             {
                 Id = user.Id!,
