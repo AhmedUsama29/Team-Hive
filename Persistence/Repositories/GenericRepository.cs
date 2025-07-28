@@ -31,6 +31,7 @@ namespace Persistence.Repositories
         {
             var res = await SpecificationEvaluator
                       .CreateQuery(_dbContext.Set<TEntity>(), specifications)
+                      .AsNoTracking()
                       .ToListAsync();
 
             return res;
@@ -40,6 +41,7 @@ namespace Persistence.Repositories
         {
             var res = await SpecificationEvaluator
                       .CreateQuery(_dbContext.Set<TEntity>(), specifications)
+                      .AsNoTracking()
                       .FirstOrDefaultAsync();
 
             return res;

@@ -7,17 +7,20 @@ using Microsoft.AspNetCore.Identity;
 using Services.Specifications;
 using ServicesAbstraction;
 using Shared.DataTransferObjects.Tasks;
+using Shared.DataTransferObjects.TeamMembers;
 using Shared.DataTransferObjects.Teams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Services
 {
     public class TeamService(IUnitOfWork _unitOfWork,
-                             IMapper _mapper) : ITeamService
+                             IMapper _mapper,
+                             UserManager<ApplicationUser> _userManager) : ITeamService
     {
         public async Task<TeamResponse> CreateTeamAsync(TeamCreationDto dto, string userId)
         {
@@ -40,6 +43,7 @@ namespace Services
             team.JoinCode = code;
             team.MaxCapacity = dto.MaxCapacity == 0 ? 50 : dto.MaxCapacity;
 
+            var user = await _userManager.FindByIdAsync(userId);
 
             var leader = new TeamMember
             {
@@ -47,7 +51,7 @@ namespace Services
                 TeamId = team.Id,
                 CreatedOn = DateTime.UtcNow,
                 IsLeader = true,
-                Title = "Leader"
+                Title = $"{user!.FirstName} {user.LastName}",
             };
             team.Members = new List<TeamMember> { leader };
 
@@ -80,6 +84,20 @@ namespace Services
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
+        public async Task<IEnumerable<TeamMemberResponse>> GetAllTeamMembersAsync(string teamId, string userId)
+        {
+            var teamRepo = _unitOfWork.GetRepository<Team, string>();
+            var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
+
+            var team = await teamRepo.GetByIdAsync(new TeamByIdAndMemberSpecification(teamId, userId));
+            if (team == null)
+                throw new UnauthorizedAccessException("You are not a member of this team.");
+
+            var members = await memberRepo.GetAllAsync(new TeamMembersByTeamIdSpecification(teamId));
+
+            return _mapper.Map<IEnumerable<TeamMemberResponse>>(members);
+
+        }
 
         public async Task<IEnumerable<TeamResponse>> GetAllTeamsByUserIdAsync(string userId)
         {
@@ -96,6 +114,22 @@ namespace Services
 
             return _mapper.Map<IEnumerable<TeamResponse>>(filteredTeams);
 
+
+        }
+
+        public async Task<TeamMemberResponse> GetMemberAsync(int memberId,string userId)
+        {
+            var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
+            var teamRepo = _unitOfWork.GetRepository<Team, string>();
+
+            var member = await memberRepo.GetByIdAsync(new TeamMemberSpecification(memberId))
+            ?? throw new MemberNotFoundException();
+
+            var team = await teamRepo.GetByIdAsync(new TeamByIdAndMemberSpecification(member.TeamId, userId));
+            if (team == null)
+                throw new UnauthorizedAccessException("You are not authorized to view this member.");
+
+            return _mapper.Map<TeamMemberResponse>(member);
 
         }
 
@@ -116,8 +150,7 @@ namespace Services
             var teamRepo = _unitOfWork.GetRepository<Team, string>();
             var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
 
-            var team = (await teamRepo.GetAllAsync(new TeamSpecification()))
-                       .FirstOrDefault(t => t.JoinCode == joinCode && t.IsDeleted == false)
+            var team = (await teamRepo.GetByIdAsync(new TeamByJoinCodeSpecification(joinCode)))
                        ?? throw new TeamNotFoundException(joinCode);
 
             if (team.IsLocked)
@@ -130,13 +163,14 @@ namespace Services
             if (alreadyMember)
                 throw new Exception("User is already a member of this team");
 
+            var user = await _userManager.FindByIdAsync(userId);
             var member = new TeamMember
             {
                 TeamId = team.Id,
                 UserId = userId,
                 CreatedOn = DateTime.UtcNow,
                 IsLeader = false,
-                Title = "Member"
+                Title = $"{user!.FirstName} {user.LastName}"
             };
 
             memberRepo.Add(member);
@@ -186,6 +220,25 @@ namespace Services
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> RemoveMemberAsync(int memberId,string teamId,string userId)
+        {
+            var teamRepo = _unitOfWork.GetRepository<Team, string>();
+            var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
+
+            var team = await teamRepo.GetByIdAsync(new TeamLeaderSpecification(teamId, userId))
+                ?? throw new UnauthorizedAccessException("Only the team leader can remove members.");
+
+            var member = team.Members.FirstOrDefault(m => m.Id == memberId)
+                ?? throw new MemberNotFoundException();
+
+            if (member.IsLeader)
+                throw new UnauthorizedAccessException("You cannot remove a team leader.");
+
+            memberRepo.Delete(member);
+            return await _unitOfWork.SaveChangesAsync() > 0;
+
+        }
+
         public async Task<TeamResponse> UpdateTeamSettingsAsync(string teamId,string userId, TeamUpdateDto dto)
         {
             if(string.IsNullOrWhiteSpace(userId))
@@ -203,9 +256,6 @@ namespace Services
 
             return _mapper.Map<TeamResponse>(team);
         }
-
-
-
 
         private string GenerateRandomCode(int length = 6)
         {
