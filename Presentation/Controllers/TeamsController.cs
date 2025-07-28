@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared.Authentication;
+using Shared.DataTransferObjects.TeamMembers;
 using Shared.DataTransferObjects.Teams;
 using System;
 using System.Collections.Generic;
@@ -69,5 +70,30 @@ namespace Presentation.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _serviceManager.TeamService.LeaveTeamAsync(teamId, userId!));
         }
+
+        [HttpGet("get/{teamId}/members")]
+        public async Task<ActionResult<IEnumerable<TeamMemberResponse>>> GetAllTeamMembers([FromRoute] string teamId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var Members = await _serviceManager.TeamService.GetAllTeamMembersAsync(teamId,userId!);
+
+            return Ok(Members);
+        }
+
+        [HttpGet("get/{teamId}/{memberId}")]
+        public async Task<ActionResult<TeamMemberResponse>> GetMember([FromRoute] string teamId, [FromRoute] int memberId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Ok(await _serviceManager.TeamService.GetMemberAsync(memberId, userId!));
+        }
+
+        [HttpDelete("remove/{teamId}/{memberId}")]
+        public async Task<ActionResult<bool>> RemoveMember([FromRoute] string teamId, [FromRoute] int memberId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Ok(await _serviceManager.TeamService.RemoveMemberAsync(memberId, teamId, userId!));
+        }
+
     }
 }
