@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared.Authentication;
+using Shared.DataTransferObjects.Tasks;
 using Shared.DataTransferObjects.TeamMembers;
 using Shared.DataTransferObjects.Teams;
 using System;
@@ -76,13 +77,13 @@ namespace Presentation.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var Members = await _serviceManager.TeamService.GetAllTeamMembersAsync(teamId,userId!);
+            var Members = await _serviceManager.TeamService.GetAllTeamMembersAsync(teamId, userId!);
 
             return Ok(Members);
         }
 
-        [HttpGet("get/{teamId}/{memberId}")]
-        public async Task<ActionResult<TeamMemberResponse>> GetMember([FromRoute] string teamId, [FromRoute] int memberId)
+        [HttpGet("get/member/{memberId}")]
+        public async Task<ActionResult<TeamMemberResponse>> GetMember([FromRoute] int memberId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _serviceManager.TeamService.GetMemberAsync(memberId, userId!));

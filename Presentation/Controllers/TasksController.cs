@@ -5,41 +5,46 @@ using Shared.DataTransferObjects.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Presentation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/teams/{teamId}/[controller]")]
     [ApiController]
     [Authorize]
     public class TasksController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpPost("Create")]
-        public async Task<ActionResult<TaskDetailedResponse>> CreateTask(TaskCreationDto taskCreationDto)
+        public async Task<ActionResult<TaskDetailedResponse>> CreateTask(TaskCreationDto taskCreationDto ,[FromRoute] string teamId)
         {
-            var task = await _serviceManager.TaskService.CreateTaskAsync(taskCreationDto); //send team id with auth
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var task = await _serviceManager.TaskService.CreateTaskAsync(taskCreationDto,teamId,userId!);
 
             return Ok(task);
         }
-        //Auth for team members and users and supervisor and teacher
-        [HttpPut("Edit")]
-        public async Task<ActionResult<TaskDetailedResponse>> UpdateTask(TaskUpdateDto taskUpdateDto)
+
+        [HttpPut("{taskId}/Edit")]
+        public async Task<ActionResult<TaskDetailedResponse>> UpdateTask(TaskUpdateDto taskUpdateDto, [FromRoute] string taskId)
         {
+            taskUpdateDto.Id = taskId;
             var UpdatedTask = await _serviceManager.TaskService.UpdateTaskAsync(taskUpdateDto);
 
             return Ok(UpdatedTask);
         }
 
-        [HttpDelete("Delete")]
-        public async Task DeleteTask(string Id)
+        [HttpDelete("{taskId}/Delete")]
+        public async Task DeleteTask([FromRoute] string taskId)
         {
-            await _serviceManager.TaskService.DeleteTaskAsync(Id);
+            await _serviceManager.TaskService.DeleteTaskAsync(taskId);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks([FromQuery]TaskQueryParameters taskQueryParameters)
+        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks(TaskQueryParameters taskQueryParameters,[FromRoute] string teamId)
         {
+            taskQueryParameters.TeamId = teamId;
             return Ok(await _serviceManager.TaskService.GetAllTasksAsync(taskQueryParameters));
         }
 

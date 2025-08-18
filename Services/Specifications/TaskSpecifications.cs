@@ -35,7 +35,8 @@ namespace Services.Specifications
             var mappedStatus = MapStatus(taskQueryParameters.Status);
 
             return t =>
-                !t.IsDeleted &&
+                (!t.IsDeleted) &&
+                (t.TeamId == taskQueryParameters.TeamId) &&
                 (!mappedPriority.HasValue || t.Priority == mappedPriority.Value) &&
                 (!mappedStatus.HasValue || t.Status == mappedStatus.Value);
         }

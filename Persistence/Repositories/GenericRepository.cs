@@ -34,7 +34,7 @@ namespace Persistence.Repositories
                       .AsNoTracking()
                       .ToListAsync();
 
-            return res;
+            return res;  
         }
 
         public async Task<TEntity?> GetByIdAsync(ISpecifications<TEntity> specifications)

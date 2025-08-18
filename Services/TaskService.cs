@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Exceptions;
+using Domain.Models.Teams;
 using Services.Specifications;
 using ServicesAbstraction;
 using Shared.DataTransferObjects.Tasks;
@@ -14,7 +15,7 @@ namespace Services
 {
     public class TaskService(IUnitOfWork _unitOfWork, IMapper _mapper) : ITaskService
     {
-        public async Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto)
+        public async Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto, string teamId, string userId)
         {
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
@@ -23,11 +24,15 @@ namespace Services
             task.Id = Guid.NewGuid().ToString();
             task.CreatedOn = DateTime.UtcNow;
             task.LastUpdatedAt = DateTime.UtcNow;
+            task.TeamId = teamId;
 
-            ///////////////////////Temp/////////////////////////
-            task.AssignedById = 3;
-            task.TeamId = "1";
-            ///////////////////////////////////////////////////
+            var memberRepo = _unitOfWork.GetRepository<TeamMember, int>();
+
+            var member = await memberRepo.GetByIdAsync(new TeamMemberByUserIdAndTeamIdSpecification(teamId, userId))
+                    ?? throw new MemberNotFoundException();
+
+            task.AssignedById = member.Id;
+            
 
             repo.Add(task);
 
@@ -38,8 +43,6 @@ namespace Services
 
         public async Task DeleteTaskAsync(string id)
         {
-
-            //make sure that the user is able to delete this task
 
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
@@ -56,7 +59,7 @@ namespace Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync(TaskQueryParameters taskQueryParameters) //specs
+        public async Task<IEnumerable<TaskResponse>> GetAllTasksAsync(TaskQueryParameters taskQueryParameters)
         {
             var specs = new TaskSpecifications(taskQueryParameters);
 
@@ -68,7 +71,7 @@ namespace Services
 
         }
 
-        public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id) //specs
+        public async Task<TaskDetailedResponse> GetTaskByIdAsync(string id)
         {
 
             var specs = new TaskSpecifications(id);
@@ -83,8 +86,6 @@ namespace Services
         public async Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
         {
 
-            //make sure that the user is able to update this task
-
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
             var specs = new TaskSpecifications(taskUpdateDto.Id);
@@ -96,7 +97,10 @@ namespace Services
 
             existingTask.LastUpdatedAt = DateTime.UtcNow;
 
+            repo.Update(existingTask);
+
             await _unitOfWork.SaveChangesAsync();
+
             return _mapper.Map<TaskDetailedResponse>(existingTask);
 
         }

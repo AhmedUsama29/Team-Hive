@@ -12,6 +12,7 @@ namespace Services.Specifications
     {
         public TeamByJoinCodeSpecification(string code) : base((t => (t.JoinCode == code) && !t.IsDeleted))
         {
+            AddInclude(t => t.Members);
         }
     }
 }
