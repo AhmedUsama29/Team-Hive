@@ -9,13 +9,7 @@ using ServicesAbstraction;
 using Shared.DataTransferObjects.Tasks;
 using Shared.DataTransferObjects.TeamMembers;
 using Shared.DataTransferObjects.Teams;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-
+using Task = Domain.Models.Task;
 namespace Services
 {
     public class TeamService(IUnitOfWork _unitOfWork,
@@ -78,11 +72,41 @@ namespace Services
                 .GetByIdAsync(new TeamLeaderSpecification(teamId, userId))
                 ?? throw new UnauthorizedAccessException("You are not authorized to delete this team.");
 
+            #region Delete Team Members
+            var membersRepo = _unitOfWork.GetRepository<TeamMember, int>();
+
+            var members = await membersRepo.GetAllAsync(new TeamMembersByTeamIdSpecification(teamId));
+            if (members.Any())
+            {
+                foreach (var member in members)
+                {
+                    member.IsDeleted = true;
+                    membersRepo.Update(member);
+                }
+            }
+            #endregion
+
+            #region Delete Team Tasks
+
+            var tasksRepo = _unitOfWork.GetRepository<Task, string>();
+            var tasks = await tasksRepo.GetAllAsync(new TaskbyTeamIdSpecification(teamId));
+            if (tasks.Any())
+            {
+                foreach (var task in tasks)
+                {
+                    task.IsDeleted = true;
+                    tasksRepo.Update(task);
+                }
+            }
+
+            #endregion
+
             team.IsDeleted = true;
             repo.Update(team);
 
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
+
 
         public async Task<IEnumerable<TeamMemberResponse>> GetAllTeamMembersAsync(string teamId, string userId)
         {
@@ -251,6 +275,8 @@ namespace Services
                 ?? throw new UnauthorizedAccessException("You are not authorized to update this team.");
 
             _mapper.Map(dto, team);
+
+            repo.Update(team);
 
             await _unitOfWork.SaveChangesAsync();
 

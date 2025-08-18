@@ -1,4 +1,5 @@
-﻿using Shared.DataTransferObjects.TeamMembers;
+﻿using Shared.DataTransferObjects.Tasks;
+using Shared.DataTransferObjects.TeamMembers;
 using Shared.DataTransferObjects.Teams;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ namespace ServicesAbstraction
 {
     public interface ITeamService
     {
-
         public Task<TeamResponse> CreateTeamAsync(TeamCreationDto teamCreationDto, string userId);
         public Task<TeamResponse> UpdateTeamSettingsAsync(string teamId,string userId, TeamUpdateDto teamUpdateDto);
         public Task<TeamResponse> GetTeamByIdAsync(string teamId, string userId);

@@ -16,5 +16,6 @@ namespace Shared.DataTransferObjects.Tasks
         public int? AssignedToId { get; set; }
 
         public string? Priority { get; set; }
+
     }
 }

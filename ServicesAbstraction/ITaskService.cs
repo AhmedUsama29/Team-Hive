@@ -11,7 +11,7 @@ namespace ServicesAbstraction
     {   
         Task<IEnumerable<TaskResponse>> GetAllTasksAsync(TaskQueryParameters taskQueryParameters);
         Task<TaskDetailedResponse> GetTaskByIdAsync(string id);
-        Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto);
+        Task<TaskDetailedResponse> CreateTaskAsync(TaskCreationDto taskCreationDto,string teamId,string userId);
         Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto);
         Task DeleteTaskAsync(string id);
     }

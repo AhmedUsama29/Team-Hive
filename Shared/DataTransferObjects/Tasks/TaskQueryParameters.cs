@@ -10,6 +10,7 @@ namespace Shared.DataTransferObjects.Tasks
 {
     public class TaskQueryParameters
     {
+        public string TeamId { get; set; } = default!;
         public TaskStatus? Status { get; set; }
 
         public Priority? Priority { get; set; }
