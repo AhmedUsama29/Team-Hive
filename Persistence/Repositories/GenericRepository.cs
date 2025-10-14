@@ -26,6 +26,10 @@ namespace Persistence.Repositories
             _dbContext.Set<TEntity>().Remove(entity);
         }
 
+        public void Attach(TEntity entity)
+        {
+            _dbContext.Set<TEntity>().Attach(entity);
+        }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity> specifications)
         {

@@ -14,7 +14,9 @@ namespace TaskHive
 
         public static IServiceCollection AddWebApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddControllers();
+			services
+				.AddControllers()
+				.AddApplicationPart(typeof(Presentation.Controllers.AuthenticationController).Assembly);
             services.AddSwaggerServices();
             services.Configure<ApiBehaviorOptions>(options =>
             {

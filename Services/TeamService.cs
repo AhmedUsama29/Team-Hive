@@ -101,8 +101,11 @@ namespace Services
 
             #endregion
 
+            repo.Attach(team);
+
             team.IsDeleted = true;
-            repo.Update(team);
+            //repo.Update(team);
+
 
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
