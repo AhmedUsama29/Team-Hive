@@ -19,7 +19,7 @@ namespace Persistence.Identity
             base.OnModelCreating(builder);
             builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
-            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");    
 
             builder.Entity<ApplicationUser>().Property(T => T.FirstName)
                 .IsRequired()

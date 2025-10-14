@@ -27,31 +27,30 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("{taskId}/Edit")]
-        public async Task<ActionResult<TaskDetailedResponse>> UpdateTask(TaskUpdateDto taskUpdateDto, [FromRoute] string taskId)
+        public async Task<ActionResult<TaskDetailedResponse>> UpdateTask(TaskUpdateDto taskUpdateDto, [FromRoute] string teamId,[FromRoute] string taskId)
         {
-            taskUpdateDto.Id = taskId;
-            var UpdatedTask = await _serviceManager.TaskService.UpdateTaskAsync(taskUpdateDto);
+            var UpdatedTask = await _serviceManager.TaskService.UpdateTaskAsync(taskId,taskUpdateDto);
 
             return Ok(UpdatedTask);
         }
 
         [HttpDelete("{taskId}/Delete")]
-        public async Task DeleteTask([FromRoute] string taskId)
+        public async Task DeleteTask([FromRoute] string teamId,[FromRoute] string taskId)
         {
             await _serviceManager.TaskService.DeleteTaskAsync(taskId);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks(TaskQueryParameters taskQueryParameters,[FromRoute] string teamId)
+        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAllTasks([FromRoute]TaskQueryParameters taskQueryParameters,[FromRoute] string teamId)
         {
             taskQueryParameters.TeamId = teamId;
             return Ok(await _serviceManager.TaskService.GetAllTasksAsync(taskQueryParameters));
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult<TaskDetailedResponse>> GetTaskById(string Id)
+        public async Task<ActionResult<TaskDetailedResponse>> GetTaskById([FromRoute]string teamId,[FromRoute]string taskId)
         {
-            return Ok(await _serviceManager.TaskService.GetTaskByIdAsync(Id));
+            return Ok(await _serviceManager.TaskService.GetTaskByIdAsync(taskId));
         }
     }
 }

@@ -83,15 +83,15 @@ namespace Services
             return task == null ? throw new TaskNotFoundException(id) : _mapper.Map<TaskDetailedResponse>(task);
         }
 
-        public async Task<TaskDetailedResponse> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
+        public async Task<TaskDetailedResponse> UpdateTaskAsync(string taskId, TaskUpdateDto taskUpdateDto)
         {
 
             var repo = _unitOfWork.GetRepository<Domain.Models.Task, string>();
 
-            var specs = new TaskSpecifications(taskUpdateDto.Id);
+            var specs = new TaskSpecifications(taskId);
 
             var existingTask = await repo.GetByIdAsync(specs) 
-                ?? throw new TaskNotFoundException(taskUpdateDto.Id);
+                ?? throw new TaskNotFoundException(taskId);
 
             _mapper.Map(taskUpdateDto, existingTask);
 
