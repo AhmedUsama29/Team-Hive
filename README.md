@@ -1,4 +1,4 @@
-## TaskHive Solution
+## Team Hive
 
 Modern, modular .NET 8 Clean Architecture backend for team/task management with JWT authentication, EF Core persistence, and Swagger/OpenAPI.
 
@@ -54,7 +54,7 @@ Prerequisites:
 
 Clone and restore:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/AhmedUsama29/Task-Hive.git
 cd TaskHiveSolution
 dotnet restore
 ```
